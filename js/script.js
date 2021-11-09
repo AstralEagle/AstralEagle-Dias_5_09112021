@@ -18,9 +18,8 @@ fetch("http://localhost:3000/api/products")
 
 
 function newElement(item){
-    console.log(item);
     const onClic = document.createElement("a");
     onClic.setAttribute("href","./product.html?id="+item["_id"]);
-    onClic.innerHTML = '<article><img src="'+item["imageUrl"]+'" alt="Image du canapé"><h3 class="productName">'+item["name"]+'</h3><p class="productDescription">'+item["description"]+'</p></article>'
+    onClic.innerHTML = '<article><img src="'+item["imageUrl"]+'" alt="'+item["altTxt"]+'"><h3 class="productName">'+item["name"]+'</h3><p class="productDescription">'+item["description"]+'</p></article>'
     tableau.appendChild(onClic);
 }
