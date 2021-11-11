@@ -62,7 +62,6 @@ function addOnPanier(item){
 
         var ifTrue = true;
         for(let onPanier of panier){
-            console.log("Vérification "+onPanier["id"]);
             if(item["_id"]==onPanier["id"] && colors.value==onPanier["color"]){
                 onPanier["quant"] = onPanier["quant"]+parseInt(quantity.value); 
                 ifTrue = false;
