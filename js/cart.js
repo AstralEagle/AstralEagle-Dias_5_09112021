@@ -1,19 +1,32 @@
 //Var main
 const cart__item = document.getElementById("cart__items");
-//Var quantity
-const total_quant = document.getElementById("totalQuantity");
-const total_price = document.getElementById("totalPrice");
 
-//Var panier
-var panier = JSON.parse(localStorage.getItem("panier"));
 
-console.log(window.location.search);
 
-//Appelle de la fonction update
-updateItem();
+if(window.location.pathname == "/html/cart.html" ){
+    //Var panier
+    var panier = JSON.parse(localStorage.getItem("panier"));
+    if(panier != null){
+        //Appelle de la fonction update
+        updateItem(panier);
+    }
+
+    //Var form
+    const formUlClass = document.getElementsByClassName("cart__order__form");
+    const formUl = formUlClass[0];
+    formUl.addEventListener("submit", function(){
+        getValueForm(); 
+    });
+}else if(window.location.pathname == "/html/confirmation.html"){
+    var idContact = localStorage.getItem("idContact");
+    if(idContact != null){
+        confirmationPage(idContact);
+    }
+}
+
 
 //Upadte cart items
-function updateItem(){
+function updateItem(panier){
     for(let item of panier){
         newItem(item);
     }
@@ -68,8 +81,13 @@ function newItem(item){
     cart__item.appendChild(article);
 }
 
+
 //Set totals 
 function setTotals(){
+    //Var quantity
+    const total_quant = document.getElementById("totalQuantity");
+    const total_price = document.getElementById("totalPrice");
+    
     var tQuant = 0;
     var tPrice = 0;
     for(let value of panier){
@@ -79,28 +97,15 @@ function setTotals(){
     total_quant.innerHTML = tQuant;
     total_price.innerHTML = tPrice+",00";
 }
-
-//Var form
-const nameForm = document.getElementById("firstName");
-const lastNameForm = document.getElementById("lastName");
-const adressForm = document.getElementById("address");
-const cityForm = document.getElementById("city");
-const emailForm = document.getElementById("email");
-const formUl = document.getElementsByClassName("cart__order__form");
-const sendForm = formUl[0];
-
-sendForm.addEventListener("submit", function(){
-    exName = RegExp("([0-9a-zA-Z_]){6,20}");
-    exLastName = RegExp("");
-    exAdres = RegExp("");
-    exCity = RegExp("");
-    exEmail = RegExp("");
-
-    if(exName.test(nameForm.value)){
-        console.log("Resus");
-    }
+function getValueForm(){
+    const nameForm = document.getElementById("firstName");
+    const lastNameForm = document.getElementById("lastName");
+    const adressForm = document.getElementById("address");
+    const cityForm = document.getElementById("city");
+    const emailForm = document.getElementById("email");
+    
     var products = [];
-    for(let value of panier){
+    for(let value of JSON.parse(localStorage.getItem("panier"))){
         products.push(value["id"]);
     }
     const order = {
@@ -114,19 +119,17 @@ sendForm.addEventListener("submit", function(){
         products: products,
     };
     console.log(order);
-    postItem(order);
-    
-});
-
+    postItem(order); 
+}
 //Post Itme
-function postItem(item){
+function postItem(value){
     fetch("http://localhost:3000/api/products/order",{
         method: "POST",
         headers: { 
             'Accept': 'application/json', 
             'Content-Type': 'application/json' 
         },
-        body: JSON.stringify(item)
+        body: JSON.stringify(value)
     }).then(function(res) {
         if (res.ok) {
             return res.json();
@@ -136,6 +139,13 @@ function postItem(item){
         localStorage.removeItem("panier");
         document.location.href = "confirmation.html";
     }).catch(function(err){
-
+        
     });
+}
+
+
+
+function confirmationPage(idContact){
+    const contenantID = document.getElementById("orderId");
+    contenantID.innerHTML = idContact;
 }
