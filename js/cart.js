@@ -118,7 +118,6 @@ function getValueForm(){
         },
         products: products,
     };
-    console.log(order);
     postItem(order); 
 }
 //Post Itme
