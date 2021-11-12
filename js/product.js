@@ -8,19 +8,18 @@ const quantity = document.getElementById("quantity");
 const addToCart = document.getElementById("addToCart");
 
 
-fetch("http://localhost:3000/api/products")
+var urlIdProduct = new URL(window.location).searchParams.get("id");
+
+
+
+fetch("http://localhost:3000/api/products/"+urlIdProduct)
 .then(function(res) {
     if (res.ok) {
       return res.json();
     }
 })
 .then(function(value) {
-    for(let item of value){
-        exp = RegExp(item["_id"]+"$")
-        if(exp.test(window.location.search)){
-            setItem(item);
-        }
-    }
+    setItem(value)
 })
 .catch(function(err) {
     // Une erreur est survenue

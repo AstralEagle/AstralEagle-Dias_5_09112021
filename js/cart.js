@@ -7,6 +7,8 @@ const total_price = document.getElementById("totalPrice");
 //Var panier
 var panier = JSON.parse(localStorage.getItem("panier"));
 
+console.log(window.location.search);
+
 //Appelle de la fonction update
 updateItem();
 
@@ -84,10 +86,10 @@ const lastNameForm = document.getElementById("lastName");
 const adressForm = document.getElementById("address");
 const cityForm = document.getElementById("city");
 const emailForm = document.getElementById("email");
-const sendForm = document.getElementById("order");
+const formUl = document.getElementsByClassName("cart__order__form");
+const sendForm = formUl[0];
 
-
-sendForm.addEventListener("sumit", function(){
+sendForm.addEventListener("submit", function(){
     exName = RegExp("([0-9a-zA-Z_]){6,20}");
     exLastName = RegExp("");
     exAdres = RegExp("");
@@ -97,6 +99,43 @@ sendForm.addEventListener("sumit", function(){
     if(exName.test(nameForm.value)){
         console.log("Resus");
     }
-    console.log('nike');
-    alert("nike");
+    var products = [];
+    for(let value of panier){
+        products.push(value["id"]);
+    }
+    const order = {
+        contact: {
+            firstName: nameForm.value,
+            lastName: lastNameForm.value,
+            city: cityForm.value,
+            address: adressForm.value,
+            email: emailForm.value,
+        },
+        products: products,
+    };
+    console.log(order);
+    postItem(order);
+    
 });
+
+//Post Itme
+function postItem(item){
+    fetch("http://localhost:3000/api/products/order",{
+        method: "POST",
+        headers: { 
+            'Accept': 'application/json', 
+            'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(item)
+    }).then(function(res) {
+        if (res.ok) {
+            return res.json();
+        }
+    }).then(function(value){
+        localStorage.setItem("idContact",value.orderId);
+        localStorage.removeItem("panier");
+        document.location.href = "confirmation.html";
+    }).catch(function(err){
+
+    });
+}
