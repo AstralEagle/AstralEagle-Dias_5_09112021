@@ -25,6 +25,7 @@ fetch("http://localhost:3000/api/products/"+urlIdProduct)
     // Une erreur est survenue
 });
 
+//Set item values
 function setItem(item){
     const img = document.createElement("img");
     img.setAttribute("src",item["imageUrl"]);
@@ -55,10 +56,10 @@ function setItem(item){
     }
     });
 }
+
+//Add item on panner
 function addOnPanier(item){
         var panier = JSON.parse(localStorage.getItem("panier"));
-
-
         var ifTrue = true;
         for(let onPanier of panier){
             if(item["_id"]==onPanier["id"] && colors.value==onPanier["color"]){

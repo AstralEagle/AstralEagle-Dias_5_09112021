@@ -15,7 +15,7 @@ fetch("http://localhost:3000/api/products")
     // Une erreur est survenue
 });
 
-
+//Create element
 function newElement(item){
     const onClic = document.createElement("a");
     onClic.setAttribute("href","./product.html?id="+item["_id"]);

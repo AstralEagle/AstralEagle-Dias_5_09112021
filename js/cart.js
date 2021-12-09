@@ -3,10 +3,12 @@ const cart__item = document.getElementById("cart__items");
 
 
 
-if(window.location.pathname == "/html/cart.html" ){
+console.log(window.location.pathname);
+if(new RegExp("cart.html$").test(window.location.pathname)){
     //Var panier
     var panier = JSON.parse(localStorage.getItem("panier"));
     if(panier != null){
+        console.log(panier);
         //Appelle de la fonction update
         updateItem(panier);
     }
@@ -17,7 +19,7 @@ if(window.location.pathname == "/html/cart.html" ){
     formUl.addEventListener("submit", function(){
         getValueForm(); 
     });
-}else if(window.location.pathname == "/html/confirmation.html"){
+}else if(new RegExp("confirmation.html$").test(window.location.pathname)){
     var idContact = localStorage.getItem("idContact");
     if(idContact != null){
         confirmationPage(idContact);
@@ -97,12 +99,15 @@ function setTotals(){
     total_quant.innerHTML = tQuant;
     total_price.innerHTML = tPrice+",00";
 }
+
+//Get form values
 function getValueForm(){
     const nameForm = document.getElementById("firstName");
     const lastNameForm = document.getElementById("lastName");
     const adressForm = document.getElementById("address");
     const cityForm = document.getElementById("city");
     const emailForm = document.getElementById("email");
+    var valueForm = [nameForm,lastNameForm,adressForm,cityForm,emailForm];
     
     var products = [];
     for(let value of JSON.parse(localStorage.getItem("panier"))){
@@ -119,6 +124,11 @@ function getValueForm(){
         products: products,
     };
     postItem(order); 
+}
+
+function verifValue(values){
+    const verifName = new RegExp("")
+
 }
 //Post Itme
 function postItem(value){
@@ -144,6 +154,7 @@ function postItem(value){
 
 
 
+//Set number command
 function confirmationPage(idContact){
     const contenantID = document.getElementById("orderId");
     contenantID.innerHTML = idContact;
