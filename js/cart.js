@@ -1,25 +1,28 @@
-//Var main
 const cart__item = document.getElementById("cart__items");
 
-
-
-console.log(window.location.pathname);
+//Verifi l'url de la page pour utiliser le bon code
 if(new RegExp("cart.html$").test(window.location.pathname)){
-    //Var panier
-    var panier = JSON.parse(localStorage.getItem("panier"));
-    if(panier != null){
-        console.log(panier);
-        //Appelle de la fonction update
+    //On initialise l'envoie du form
+    const form = document.getElementsByClassName("cart__order__form");
+    const submitForm = form[0];
+    submitForm.addEventListener("submit", function(){
+        getValueForm(); 
+        event.preventDefault();
+    });  
+    //Initialise le prix et la quantité du pannier
+    const total_quant = document.getElementById("totalQuantity");
+    const total_price = document.getElementById("totalPrice");
+    total_price.innerHTML = "0";
+    total_quant.innerHTML = "0";
+
+    //Si il y a un kanap dans le pannier on affiche le panier
+    if(localStorage.getItem("panier")){
+        var panier = JSON.parse(localStorage.getItem("panier"));
         updateItem(panier);
     }
 
-    //Var form
-    const formUlClass = document.getElementsByClassName("cart__order__form");
-    const formUl = formUlClass[0];
-    formUl.addEventListener("submit", function(){
-        getValueForm(); 
-    });
-}else if(new RegExp("confirmation.html$").test(window.location.pathname)){
+}
+else if(new RegExp("confirmation.html$").test(window.location.pathname)){
     var idContact = localStorage.getItem("idContact");
     if(idContact != null){
         confirmationPage(idContact);
@@ -27,14 +30,14 @@ if(new RegExp("cart.html$").test(window.location.pathname)){
 }
 
 
-//Upadte cart items
+//Boucle pour affiche les Kanaps du pannier
 function updateItem(panier){
     for(let item of panier){
         newItem(item);
     }
     setTotals();
 }
-//New cart item
+//Fonction pour écrire le code html dynamiquement par rapport au Kanap selectionné
 function newItem(item){
     const article = document.createElement("article");
     article.setAttribute("class", "cart__item");
@@ -84,9 +87,8 @@ function newItem(item){
 }
 
 
-//Set totals 
+//Permet d'afficher la quantité et le prix total du pannier
 function setTotals(){
-    //Var quantity
     const total_quant = document.getElementById("totalQuantity");
     const total_price = document.getElementById("totalPrice");
     
@@ -100,37 +102,40 @@ function setTotals(){
     total_price.innerHTML = tPrice+",00";
 }
 
-//Get form values
+//Fonction appellé quand on envoie le form
 function getValueForm(){
-    const nameForm = document.getElementById("firstName");
-    const lastNameForm = document.getElementById("lastName");
-    const adressForm = document.getElementById("address");
-    const cityForm = document.getElementById("city");
-    const emailForm = document.getElementById("email");
-    var valueForm = [nameForm,lastNameForm,adressForm,cityForm,emailForm];
-    
-    var products = [];
-    for(let value of JSON.parse(localStorage.getItem("panier"))){
-        products.push(value["id"]);
+    //Si le panier contient au moins un kanap
+    if(localStorage.getItem("panier")){
+        const itemsPanner = JSON.parse(localStorage.getItem("panier"));
+        const nameForm = document.getElementById("firstName");
+        const lastNameForm = document.getElementById("lastName");
+        const adressForm = document.getElementById("address");
+        const cityForm = document.getElementById("city");
+        const emailForm = document.getElementById("email");
+        
+        //On créert un tableau pour on stockera les valeurs des Kanaps
+        var products = [];
+        for(let value of itemsPanner){
+            products.push(value["id"]);
+        }
+        const order = {
+            contact: {
+                firstName: nameForm.value,
+                lastName: lastNameForm.value,
+                city: cityForm.value,
+                address: adressForm.value,
+                email: emailForm.value,
+            },
+            products: products,
+        };
+        postItem(order); 
     }
-    const order = {
-        contact: {
-            firstName: nameForm.value,
-            lastName: lastNameForm.value,
-            city: cityForm.value,
-            address: adressForm.value,
-            email: emailForm.value,
-        },
-        products: products,
-    };
-    postItem(order); 
+    //Si le pannier est vide
+    else{
+        alert("Votre pannier est vide");
+    }
 }
-
-function verifValue(values){
-    const verifName = new RegExp("")
-
-}
-//Post Itme
+//Fonction pour envoyer la commande au serveur
 function postItem(value){
     fetch("http://localhost:3000/api/products/order",{
         method: "POST",
@@ -148,13 +153,13 @@ function postItem(value){
         localStorage.removeItem("panier");
         document.location.href = "confirmation.html";
     }).catch(function(err){
-        
+        console.error(err.message);
     });
 }
 
 
 
-//Set number command
+//Fonctionn pour afficher le numéreau de commande pour l'utilisateur
 function confirmationPage(idContact){
     const contenantID = document.getElementById("orderId");
     contenantID.innerHTML = idContact;
