@@ -9,13 +9,13 @@ if(new RegExp("cart.html$").test(window.location.pathname)){
         getValueForm(); 
         event.preventDefault();
     });  
-    //Initialise le prix et la quantité du pannier
+    //Initialise le prix et la quantité du panier
     const total_quant = document.getElementById("totalQuantity");
     const total_price = document.getElementById("totalPrice");
     total_price.innerHTML = "0";
     total_quant.innerHTML = "0";
 
-    //Si il y a un kanap dans le pannier on affiche le panier
+    //Si il y a un kanap dans le panier on affiche le panier
     if(localStorage.getItem("panier")){
         var panier = JSON.parse(localStorage.getItem("panier"));
         updateItem(panier);
@@ -30,7 +30,7 @@ else if(new RegExp("confirmation.html$").test(window.location.pathname)){
 }
 
 
-//Boucle pour affiche les Kanaps du pannier
+//Boucle pour affiche les Kanaps du panier
 function updateItem(panier){
     for(let item of panier){
         newItem(item);
@@ -87,7 +87,7 @@ function newItem(item){
 }
 
 
-//Permet d'afficher la quantité et le prix total du pannier
+//Permet d'afficher la quantité et le prix total du panier
 function setTotals(){
     const total_quant = document.getElementById("totalQuantity");
     const total_price = document.getElementById("totalPrice");
@@ -130,9 +130,9 @@ function getValueForm(){
         };
         postItem(order); 
     }
-    //Si le pannier est vide
+    //Si le panier est vide
     else{
-        alert("Votre pannier est vide");
+        alert("Votre panier est vide");
     }
 }
 //Fonction pour envoyer la commande au serveur

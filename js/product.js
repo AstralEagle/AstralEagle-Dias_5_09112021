@@ -61,7 +61,7 @@ function setItem(item){
     });
 }
 
-//Ajoute un kanap a la list du pannier
+//Ajoute un kanap a la list du panier
 function addOnPanier(item){
         var panier = JSON.parse(localStorage.getItem("panier"));
         var ifTrue = true;
