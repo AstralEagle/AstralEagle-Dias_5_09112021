@@ -23,9 +23,12 @@ if(new RegExp("cart.html$").test(window.location.pathname)){
 
 }
 else if(new RegExp("confirmation.html$").test(window.location.pathname)){
-    var idContact = localStorage.getItem("idContact");
-    if(idContact != null){
-        confirmationPage(idContact);
+    if(localStorage.getItem("idContact")){
+        confirmationPage(localStorage.getItem("idContact"));
+    }
+    else{
+        console.error("Error no commande ID");
+        document.location.href = "index.html";
     }
 }
 
